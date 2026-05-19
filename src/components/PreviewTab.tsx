@@ -6,6 +6,7 @@ type PreviewTabProps = {
   files: File[];
   selectedFormat: Format;
   selectedQuality: number; // 1 to 100
+  setCompressedFile: React.Dispatch<React.SetStateAction<Blob | null>>;
 };
 
 function formatBytes(bytes: number) {
@@ -51,7 +52,6 @@ function compressImage(
 
       const mimeType = getMimeType(format, file.type);
 
-      // PNG usually ignores quality because it is lossless.
       const normalizedQuality =
         format === 'png' ? undefined : quality / 100;
 
@@ -84,8 +84,9 @@ export default function PreviewTab({
   files,
   selectedFormat,
   selectedQuality,
+  setCompressedFile,
 }: PreviewTabProps) {
-  const hasFiles = files.length > 0;
+  const currentFile = files.length > 0 ? files[files.length - 1] : null;
 
   const [originalUrl, setOriginalUrl] = useState('');
   const [compressedUrl, setCompressedUrl] = useState('');
@@ -97,42 +98,44 @@ export default function PreviewTab({
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-  // Generate original and compressed preview
   useEffect(() => {
-    if (!hasFiles) {
+    if (!currentFile) {
       setOriginalUrl('');
       setCompressedUrl('');
       setCompressedSize(0);
       setError('');
+      setCompressedFile(null);
       return;
     }
 
-    const file = files[files.length - 1];
-
     let active = true;
-    let localOriginalUrl = '';
-    let localCompressedUrl = '';
-
     setLoadingCompressed(true);
     setError('');
+    setCompressedUrl('');
+    setCompressedSize(0);
 
-    localOriginalUrl = URL.createObjectURL(file);
-    setOriginalUrl(localOriginalUrl);
+    const originalObjectUrl = URL.createObjectURL(currentFile);
+    setOriginalUrl(originalObjectUrl);
 
-    compressImage(file, selectedFormat, selectedQuality)
+    let compressedObjectUrl = '';
+
+    compressImage(currentFile, selectedFormat, selectedQuality)
       .then((blob) => {
         if (!active) return;
 
-        localCompressedUrl = URL.createObjectURL(blob);
-        setCompressedUrl(localCompressedUrl);
+        setCompressedFile(blob);
+
+        compressedObjectUrl = URL.createObjectURL(blob);
+        setCompressedUrl(compressedObjectUrl);
         setCompressedSize(blob.size);
       })
       .catch((err) => {
         if (!active) return;
 
-        setError(err instanceof Error ? err.message : 'Compression failed.');
+        setCompressedFile(null);
         setCompressedUrl('');
         setCompressedSize(0);
+        setError(err instanceof Error ? err.message : 'Compression failed.');
       })
       .finally(() => {
         if (!active) return;
@@ -141,18 +144,13 @@ export default function PreviewTab({
 
     return () => {
       active = false;
-
-      if (localOriginalUrl) {
-        URL.revokeObjectURL(localOriginalUrl);
-      }
-
-      if (localCompressedUrl) {
-        URL.revokeObjectURL(localCompressedUrl);
+      URL.revokeObjectURL(originalObjectUrl);
+      if (compressedObjectUrl) {
+        URL.revokeObjectURL(compressedObjectUrl);
       }
     };
-  }, [files, hasFiles, selectedFormat, selectedQuality]);
+  }, [currentFile, selectedFormat, selectedQuality, setCompressedFile]);
 
-  // Mouse + touch dragging
   useEffect(() => {
     const updatePosition = (clientX: number) => {
       if (!wrapperRef.current) return;
@@ -170,8 +168,7 @@ export default function PreviewTab({
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!dragging) return;
-      if (e.touches.length === 0) return;
+      if (!dragging || e.touches.length === 0) return;
       updatePosition(e.touches[0].clientX);
     };
 
@@ -190,15 +187,16 @@ export default function PreviewTab({
     };
   }, [dragging]);
 
-  const originalSize = hasFiles ? files[0].size : 0;
+  const originalSize = currentFile?.size ?? 0;
   const savings =
     originalSize > 0 && compressedSize > 0
       ? (((originalSize - compressedSize) / originalSize) * 100).toFixed(1)
       : '0.0';
 
+  const hasFiles = !!currentFile;
+
   return (
     <div id="tab-preview" className="flex-1 flex flex-col">
-      {/* EMPTY STATE */}
       {!hasFiles && (
         <div className="flex-1 flex flex-col items-center justify-center gap-3 p-10 text-center">
           <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center">
@@ -224,14 +222,12 @@ export default function PreviewTab({
         </div>
       )}
 
-      {/* PREVIEW CONTENT */}
       {hasFiles && (
         <div className="flex-1 flex flex-col">
           <div
             ref={wrapperRef}
             className="relative bg-gray-50 flex-1 min-h-[260px] select-none overflow-hidden"
           >
-            {/* ORIGINAL */}
             {originalUrl && (
               <img
                 src={originalUrl}
@@ -241,7 +237,6 @@ export default function PreviewTab({
               />
             )}
 
-            {/* COMPRESSED CLIP */}
             <div
               id="compressedClip"
               className="absolute inset-0 overflow-hidden"
@@ -259,11 +254,13 @@ export default function PreviewTab({
               )}
             </div>
 
-            {/* DIVIDER */}
             <div
               id="divider"
               className="absolute top-0 bottom-0 w-0.5 bg-white shadow cursor-ew-resize z-20"
-              style={{ left: `${dividerPos}%`, transform: 'translateX(-50%)' }}
+              style={{
+                left: `${dividerPos}%`,
+                transform: 'translateX(-50%)',
+              }}
               onMouseDown={(e) => {
                 e.preventDefault();
                 setDragging(true);
@@ -275,7 +272,6 @@ export default function PreviewTab({
               </div>
             </div>
 
-            {/* LABELS */}
             <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded pointer-events-none">
               Original
             </div>
@@ -284,14 +280,12 @@ export default function PreviewTab({
               Compressed
             </div>
 
-            {/* LOADING */}
             {loadingCompressed && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/60 text-sm text-gray-600 z-10">
                 Compressing preview...
               </div>
             )}
 
-            {/* ERROR */}
             {error && (
               <div className="absolute bottom-2 left-2 right-2 text-xs text-red-600 bg-white/80 border border-red-200 rounded px-2 py-1 z-10">
                 {error}
@@ -299,11 +293,7 @@ export default function PreviewTab({
             )}
           </div>
 
-          {/* INFO BAR */}
-          <div
-            id="infoBar"
-            className="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 bg-white text-xs text-gray-500"
-          >
+          <div className="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 bg-white text-xs text-gray-500">
             <span>{formatBytes(originalSize)}</span>
 
             <div className="flex items-center gap-1.5">

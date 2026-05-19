@@ -19,12 +19,22 @@ type Tab = 'preview' | 'stats' | 'batch';
 const [selectedFormat, setSelectedFormat] = useState<Format>('webp');
 const [selectedQuality, setSelectedQuality] = useState<number>(80);
 const [activeTab, setActiveTab] = useState<Tab>('preview');
+const [compressedFile, setCompressedFile] = useState<Blob | null>(null);
 
 const [files, setFiles] = useState<File[]>([]);
 
 const handleFiles = (newFiles: File[]) => {
   setFiles(prev => [...prev, ...newFiles]);
 };
+
+
+const handleReset = () => {
+    setFiles([]);
+    setCompressedFile(null);
+    setSelectedFormat('webp');
+    setSelectedQuality(80);
+    setActiveTab('preview');
+  };
 
 
   
@@ -46,7 +56,15 @@ const handleFiles = (newFiles: File[]) => {
 
             <QualitySlider selectedQuality={selectedQuality} 
               setSelectedQuality={setSelectedQuality}/>
-            <Actions />
+           
+           
+          <Actions
+              files={files}
+              compressedFile={compressedFile}
+              selectedFormat={selectedFormat}
+              onReset={handleReset}
+            />
+
           </div>
 
           {/* RIGHT PANEL */}
@@ -59,6 +77,7 @@ const handleFiles = (newFiles: File[]) => {
                   files={files}
                   selectedFormat={selectedFormat}
                   selectedQuality={selectedQuality}
+                  setCompressedFile={setCompressedFile}
                 />
               )}
 
@@ -73,7 +92,16 @@ const handleFiles = (newFiles: File[]) => {
                />
             )}
 
-            {/* <BatchTab /> */}
+                    
+          {activeTab === 'batch' && (
+            <BatchTab
+              files={files}
+              selectedFormat={selectedFormat}
+              selectedQuality={selectedQuality}
+              setFiles={setFiles}
+            />
+          )}
+
           </div>
 
         </div>
