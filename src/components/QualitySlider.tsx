@@ -1,4 +1,17 @@
-export default function QualitySlider() {
+
+import React from 'react';
+
+
+type QualitySelectorProps = {
+  selectedQuality: number;
+  setSelectedQuality: React.Dispatch<React.SetStateAction<number>>;
+};
+
+
+export default function QualitySlider({
+  selectedQuality,
+  setSelectedQuality,
+}: QualitySelectorProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-2.5">
@@ -6,43 +19,47 @@ export default function QualitySlider() {
           Quality
         </p>
 
+        
         <span className="mono text-sm font-medium text-gray-700">
-          80
+          {selectedQuality}
         </span>
+
       </div>
 
+      
       <input
         type="range"
-        id="qualitySlider"
         min={1}
         max={100}
-        value={80}
-        className="w-full"
-        style={{ ["--val" as any]: "80%" }}
+        value={selectedQuality}
+        onChange={(e) => setSelectedQuality(Number(e.target.value))}
+        className="w-full cursor-pointer"
+        style={{ ["--val" as any]: `${selectedQuality}%` }}
       />
+
 
       <div className="flex justify-between mt-1.5">
         <span className="text-xs text-gray-300">1 — Smallest</span>
         <span className="text-xs text-gray-300">100 — Best quality</span>
       </div>
 
+      
       <div className="flex gap-1.5 mt-2">
-        <button className="text-xs px-2.5 py-1 rounded-md bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors text-gray-500">
-          40
-        </button>
-        <button className="text-xs px-2.5 py-1 rounded-md bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors text-gray-500">
-          60
-        </button>
-        <button className="text-xs px-2.5 py-1 rounded-md bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors text-gray-500">
-          80
-        </button>
-        <button className="text-xs px-2.5 py-1 rounded-md bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors text-gray-500">
-          90
-        </button>
-        <button className="text-xs px-2.5 py-1 rounded-md bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors text-gray-500">
-          100
-        </button>
+        {[40, 60, 80, 90, 100].map((q) => (
+          <button
+            key={q}
+            onClick={() => setSelectedQuality(q)}
+            className={`text-xs px-2.5 py-1 rounded-md border cursor-pointer transition-colors ${
+              selectedQuality === q
+                ? 'bg-blue-100 border-blue-400 text-blue-700'
+                : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100'
+            }`}
+          >
+            {q}
+          </button>
+        ))}
       </div>
+
     </div>
   );
 }

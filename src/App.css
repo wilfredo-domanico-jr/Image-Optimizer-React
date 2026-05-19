@@ -67,9 +67,6 @@ body > * {
 }
 
 /* ─── HEADER ─────────────────────────────────────────────── */
-.max-w-5xl.mx-auto.mb-6 {
-  animation-delay: 0s;
-}
 
 /* Logo mark */
 .max-w-5xl h1 {
