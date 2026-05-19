@@ -49,7 +49,7 @@ const handleReset = () => {
           <div className="p-5 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col gap-5">
            <DropZone onFiles={handleFiles} />
             
-      <FormatSelector
+            <FormatSelector
               selectedFormat={selectedFormat}
               setSelectedFormat={setSelectedFormat}
             />
@@ -93,14 +93,14 @@ const handleReset = () => {
             )}
 
                     
-          {activeTab === 'batch' && (
-            <BatchTab
-              files={files}
-              selectedFormat={selectedFormat}
-              selectedQuality={selectedQuality}
-              setFiles={setFiles}
-            />
-          )}
+            {activeTab === 'batch' && (
+              <BatchTab
+                files={files}
+                selectedFormat={selectedFormat}
+                selectedQuality={selectedQuality}
+                setFiles={setFiles}
+              />
+            )}
 
           </div>
 

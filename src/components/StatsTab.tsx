@@ -117,6 +117,8 @@ export default function StatsTab({ files, selectedFormat, selectedQuality } : St
           height: result.height,
         });
       }).catch((err) => {
+        console.error(err);
+
         if (!active) return;
         setCompressedSize(0);
         setDimensions(null);
