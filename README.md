@@ -34,7 +34,7 @@ Supports **JPG, PNG, and WebP** formats with real-time preview and batch process
 ## 📸 Screenshot
 
 <p align="center">
-  <img src="screenshot.png" alt="Image Optimizer Screenshot" width="700">
+  <img src="screenshot.png" alt="Image Optimizer Screenshot" width="1000">
 </p>
 
 ---
