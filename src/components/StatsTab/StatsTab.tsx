@@ -88,6 +88,7 @@ function compressImage(
 
 export default function StatsTab({ files, selectedFormat, selectedQuality } : StatsTabProps) {
 
+  const [loading, setLoading] = useState(false);
   const hasFiles = files.length > 0;
 
   const originalSize = hasFiles ? files[0].size : 0;
@@ -105,6 +106,7 @@ export default function StatsTab({ files, selectedFormat, selectedQuality } : St
 
     const file = files[files.length - 1];
 
+    setLoading(true);
     let active = true;
 
     
@@ -126,6 +128,9 @@ export default function StatsTab({ files, selectedFormat, selectedQuality } : St
       })
       .finally(() => {
         if (!active) return;
+          setTimeout(() => {
+          setLoading(false);
+        }, 1000);
       });
 
     return () => {
@@ -156,7 +161,19 @@ export default function StatsTab({ files, selectedFormat, selectedQuality } : St
 
 
   return (
-    <div className="flex-1 p-5 space-y-4">
+   <div className="flex-1 p-5 space-y-4 relative">
+
+    {loading && (
+  <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div className="flex flex-col items-center gap-2">
+      <div className="w-8 h-8 border-2 border-[var(--surface3)] border-t-[var(--accent)] rounded-full animate-spin" />
+
+      <p className="text-xs text-[var(--text-muted)] font-mono">
+        Compressing...
+      </p>
+    </div>
+  </div>
+)}
 
       {!hasFiles && (
       <div className="flex items-center justify-center h-full text-sm text-[var(--text-dim)] font-mono">

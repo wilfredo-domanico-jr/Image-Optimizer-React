@@ -71,7 +71,6 @@ const handleReset = () => {
           <div className="flex flex-col">
             <Tabs files={files} activeTab={activeTab}  setActiveTab={setActiveTab} />
 
-
             {activeTab === 'preview' && (
                 <PreviewTab
                   files={files}

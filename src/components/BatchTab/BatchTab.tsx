@@ -72,6 +72,7 @@ export default function BatchTab({
   setFiles,
 }: BatchTabProps) {
 
+  const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<BatchItem[]>([]);
 
   // Process all files
@@ -82,6 +83,8 @@ export default function BatchTab({
       setItems([]);
       return;
     }
+
+    setLoading(true);
 
     async function process() {
       const results: BatchItem[] = [];
@@ -107,6 +110,9 @@ export default function BatchTab({
       }
 
       setItems(results);
+      setTimeout(() => {
+          setLoading(false);
+      }, 1000);
     }
 
     process();
@@ -160,7 +166,18 @@ export default function BatchTab({
   const hasFiles = items.length > 0;
 
   return (
-       <div className="flex-1 flex flex-col">
+       <div className="flex-1 flex flex-col relative">
+
+      {loading && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-8 h-8 border-2 border-[var(--surface3)] border-t-[var(--accent)] rounded-full animate-spin" />
+            <p className="text-xs text-[var(--text-muted)] font-mono">
+              Compressing {files.length} images...
+            </p>
+          </div>
+        </div>
+      )}
 
       {!hasFiles && (
              <div className="flex-1 flex items-center justify-center text-sm text-[var(--text-dim)] font-mono p-10">
