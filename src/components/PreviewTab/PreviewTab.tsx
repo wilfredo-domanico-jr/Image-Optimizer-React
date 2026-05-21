@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 
 type Format = 'webp' | 'jpeg' | 'png' | 'original';
@@ -196,12 +197,12 @@ export default function PreviewTab({
   const hasFiles = !!currentFile;
 
   return (
-    <div id="tab-preview" className="flex-1 flex flex-col">
+    <div  className="flex-1 flex flex-col">
       {!hasFiles && (
-        <div className="flex-1 flex flex-col items-center justify-center gap-3 p-10 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center">
+          <div className="flex-1 flex flex-col items-center justify-center gap-3 p-10 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-[var(--surface2)] border border-[var(--border)] flex items-center justify-center">
             <svg
-              className="w-6 h-6 text-gray-300"
+              className="w-6 h-6 text-[var(--text-muted)]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -215,8 +216,8 @@ export default function PreviewTab({
             </svg>
           </div>
 
-          <p className="text-sm text-gray-400">No image loaded</p>
-          <p className="text-xs text-gray-300 mt-1">
+          <p className="text-sm text-[var(--text-muted)]">No image loaded</p>
+          <p className="text-xs text-[var(--text-dim)]">
             Upload an image to see the preview
           </p>
         </div>
@@ -226,7 +227,10 @@ export default function PreviewTab({
         <div className="flex-1 flex flex-col">
           <div
             ref={wrapperRef}
-            className="relative bg-gray-50 flex-1 min-h-[260px] select-none overflow-hidden"
+            className=" relative flex-1 min-h-[260px] select-none overflow-hidden
+          bg-[var(--bg)]
+          bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)]
+          bg-[size:20px_20px]"
           >
             {originalUrl && (
               <img
@@ -238,7 +242,6 @@ export default function PreviewTab({
             )}
 
             <div
-              id="compressedClip"
               className="absolute inset-0 overflow-hidden"
               style={{ width: `${dividerPos}%` }}
             >
@@ -255,8 +258,9 @@ export default function PreviewTab({
             </div>
 
             <div
-              id="divider"
-              className="absolute top-0 bottom-0 w-0.5 bg-white shadow cursor-ew-resize z-20"
+              className="   absolute top-0 bottom-0 w-[2px] z-20 cursor-ew-resize
+            bg-[var(--accent)]
+            shadow-[0_0_12px_rgba(200,240,96,0.5)]"
               style={{
                 left: `${dividerPos}%`,
                 transform: 'translateX(-50%)',
@@ -267,38 +271,46 @@ export default function PreviewTab({
               }}
               onTouchStart={() => setDragging(true)}
             >
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 bg-white rounded-full shadow-lg flex items-center justify-center text-xs font-bold text-gray-600 border border-gray-200 select-none">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+              w-7 h-7 rounded-full
+              bg-[var(--accent)]
+              text-black font-bold text-xs
+              flex items-center justify-center
+              shadow-[0_0_16px_rgba(200,240,96,0.4),0_2px_8px_rgba(0,0,0,0.5)]">
                 ⇔
               </div>
             </div>
 
-            <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded pointer-events-none">
-              Original
-            </div>
+              <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded border border-white/10 backdrop-blur">
+          Original
+        </div>
 
-            <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded pointer-events-none">
-              Compressed
-            </div>
+
+             <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded border border-white/10 backdrop-blur">
+          Compressed
+        </div>
 
             {loadingCompressed && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/60 text-sm text-gray-600 z-10">
-                Compressing preview...
-              </div>
+                <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/60 text-sm text-gray-600">
+            Compressing preview...
+          </div>
             )}
 
             {error && (
-              <div className="absolute bottom-2 left-2 right-2 text-xs text-red-600 bg-white/80 border border-red-200 rounded px-2 py-1 z-10">
-                {error}
-              </div>
+                <div className="absolute bottom-2 left-2 right-2 text-xs text-red-500 bg-zinc-900/80 border border-red-200 rounded px-2 py-1">
+            {error}
+          </div>
             )}
           </div>
 
-          <div className="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 bg-white text-xs text-gray-500">
-            <span>{formatBytes(originalSize)}</span>
+           <div className="flex items-center justify-between px-4 py-2.5 border-t border-[var(--border)] bg-[var(--surface2)] text-xs">
+            <span className="text-[var(--text-muted)]">
+            {formatBytes(originalSize)}
+            </span>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 text-[var(--accent)]">
               <svg
-                className="w-3 h-3 text-green-500"
+                className="w-3 h-3"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -311,12 +323,14 @@ export default function PreviewTab({
                 />
               </svg>
 
-              <span className="font-semibold text-green-600">
+               <span>
                 {compressedSize > 0 ? `${savings}% smaller` : '—'}
               </span>
             </div>
 
-            <span>{compressedSize > 0 ? formatBytes(compressedSize) : '—'}</span>
+               <span className="text-[var(--text-muted)]">
+                {compressedSize > 0 ? formatBytes(compressedSize) : '—'}
+                </span>
           </div>
         </div>
       )}

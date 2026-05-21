@@ -1,3 +1,4 @@
+
 type Format = 'webp' | 'jpeg' | 'png' | 'original';
 
 type ActionsProps = {
@@ -42,11 +43,27 @@ export default function Actions({
   };
 
   return (
-    <div className="flex gap-2 mt-auto pt-2">
+       <div className="flex gap-2 mt-auto pt-2">
+      
+      {/* Download button */}
       <button
         onClick={handleDownload}
         disabled={!compressedFile || files.length === 0}
-        className="dl-btn flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        className="
+          flex-1 flex items-center justify-center gap-2
+          py-2.5 rounded-lg text-sm font-bold
+          bg-[var(--accent)] text-black
+          shadow-[0_0_20px_rgba(200,240,96,0.2)]
+          transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]
+          hover:bg-[#d9ff6e] hover:-translate-y-0.5
+          hover:shadow-[0_0_30px_rgba(200,240,96,0.35),0_8px_24px_rgba(0,0,0,0.3)]
+          active:translate-y-0
+          cursor-pointer
+          disabled:bg-[var(--surface3)]
+          disabled:text-[var(--text-dim)]
+          disabled:shadow-none
+          disabled:cursor-not-allowed
+        "
       >
         <svg
           className="w-4 h-4"
@@ -64,11 +81,22 @@ export default function Actions({
         Download
       </button>
 
+      {/* Reset button */}
       <button
-        id="resetBtn"
         onClick={onReset}
-        className="p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors text-gray-400 cursor-pointer"
         title="Reset"
+        className="
+          p-2.5 rounded-lg
+          bg-[var(--surface2)]
+          border border-[var(--border)]
+          text-[var(--text-muted)]
+          cursor-pointer
+          transition-all duration-150
+          hover:bg-[var(--surface3)]
+          hover:border-[var(--border2)]
+          hover:text-[var(--red)]
+          hover:rotate-12
+        "
       >
         <svg
           className="w-4 h-4"

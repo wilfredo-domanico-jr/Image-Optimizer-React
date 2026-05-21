@@ -1,3 +1,5 @@
+
+
 import { useRef, type ChangeEvent, type DragEvent } from "react";
 
 type DropZoneProps = {
@@ -28,15 +30,34 @@ export default function DropZone({ onFiles }: DropZoneProps) {
   };
 
   return (
-    <div
+     <div
       onClick={handleClick}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      className="drop-zone border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer min-h-[160px] group"
+      className="
+        border-2 border-dashed border-[var(--border)]
+        rounded-xl p-8 min-h-[160px]
+        flex flex-col items-center justify-center gap-3
+        cursor-pointer group
+        bg-[var(--surface)]
+        transition-all duration-200
+        hover:border-[var(--border2)]
+        hover:bg-[var(--surface2)]
+      "
     >
-      <div className="w-11 h-11 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center group-hover:bg-gray-100 transition-colors">
+      {/* Icon */}
+      <div
+        className="
+          w-11 h-11 rounded-xl
+          bg-[var(--surface2)]
+          border border-[var(--border)]
+          flex items-center justify-center
+          transition-colors duration-200
+          group-hover:bg-[var(--surface3)]
+        "
+      >
         <svg
-          className="w-5 h-5 text-gray-400"
+          className="w-5 h-5 text-[var(--text-muted)]"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -50,13 +71,17 @@ export default function DropZone({ onFiles }: DropZoneProps) {
         </svg>
       </div>
 
+      {/* Text */}
       <div className="text-center">
-        <p className="text-sm font-medium text-gray-700">Drop images here</p>
-        <p className="text-xs text-gray-400 mt-0.5">
+        <p className="text-sm font-medium text-[var(--text)]">
+          Drop images here
+        </p>
+        <p className="text-xs text-[var(--text-muted)] mt-0.5">
           or click to browse · JPG, PNG, WebP
         </p>
       </div>
 
+      {/* Input */}
       <input
         ref={fileInputRef}
         type="file"

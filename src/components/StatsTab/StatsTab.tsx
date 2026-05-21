@@ -1,3 +1,4 @@
+
 import { useEffect,  useState } from 'react';
 
 type Format = 'webp' | 'jpeg' | 'png' | 'original';
@@ -155,10 +156,10 @@ export default function StatsTab({ files, selectedFormat, selectedQuality } : St
 
 
   return (
-    <div className="flex-1 p-5">
+    <div className="flex-1 p-5 space-y-4">
 
       {!hasFiles && (
-      <div className="flex items-center justify-center h-full text-sm text-gray-300">
+      <div className="flex items-center justify-center h-full text-sm text-[var(--text-dim)] font-mono">
         Upload an image to see stats
       </div>
 
@@ -166,21 +167,22 @@ export default function StatsTab({ files, selectedFormat, selectedQuality } : St
     
       {hasFiles && (
 
-         <div id="statsContent" className="space-y-4">
+         <div className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-gray-50 rounded-xl p-3.5">
-            <p className="text-xs text-gray-400 mb-1">Original Size</p>
-            <p className="mono text-lg font-semibold text-white">{formatBytes(originalSize)}</p>
+           <div className="bg-[var(--surface2)] border border-[var(--border)] rounded-xl p-3.5">
+          <p className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] font-mono mb-1">Original Size</p>
+           <p className="font-mono text-lg font-semibold text-[var(--text)]">{formatBytes(originalSize)}</p>
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-3.5">
-            <p className="text-xs text-gray-400 mb-1">Compressed Size</p>
-            <p className="mono text-lg font-semibold text-white">{compressedSize > 0 ? formatBytes(compressedSize) : '—'}</p>
+          <div className="bg-[var(--surface2)] border border-[var(--border)] rounded-xl p-3.5">
+          <p className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] font-mono mb-1">Compressed Size</p>
+           <p className="font-mono text-lg font-semibold text-[var(--text)]">{compressedSize > 0 ? formatBytes(compressedSize) : '—'}</p>
           </div>
 
-          <div className="bg-green-50 rounded-xl p-3.5 col-span-2">
-            <p className="text-xs text-green-600 mb-1">Space Saved</p>
-            <p id="statSaved" className="mono text-2xl font-bold text-green-700">
+                  <div className="col-span-2 bg-[rgba(200,240,96,0.06)] border border-[rgba(200,240,96,0.2)] rounded-xl p-3.5">
+          <p className="text-[10px] uppercase tracking-widest text-[var(--accent)] font-mono mb-1">
+           Space Saved</p>
+             <p className="font-mono text-2xl font-bold text-[var(--accent)]">
               
     {compressedSize > 0
         ? Number(savings) > 0
@@ -193,23 +195,25 @@ export default function StatsTab({ files, selectedFormat, selectedQuality } : St
         </div>
 
         <div>
-          <div className="flex justify-between mb-1.5">
-            <span className="text-xs text-gray-400">Original</span>
-            <span className="text-xs text-gray-400">Compressed</span>
-          </div>
+           <div className="flex justify-between mb-1.5 text-[10px] text-[var(--text-muted)] font-mono">
+          <span>Original</span>
+          <span>Compressed</span>
+        </div>
 
-          <div className="h-3 rounded-full bg-gray-100 overflow-hidden relative">
+           <div className="h-3 rounded-full bg-[var(--surface3)] overflow-hidden">
             
             <div
-              className={`h-full rounded-full transition-all duration-300 ${
-                isSaved ? 'bg-green-400' : 'bg-red-400'
-              }`}
+              className={`h-full transition-all duration-300 ${
+              isSaved
+                ? "bg-[var(--accent)] shadow-[0_0_12px_rgba(200,240,96,0.35)]"
+                : "bg-[var(--red)]"
+            }`}
               style={{ width: `${ratioPercent}%` }}
             ></div>
 
           </div>
 
-          <p id="statDimensions" className="text-xs text-gray-300 mt-2 mono">
+           <p className="text-xs text-[var(--text-dim)] font-mono mt-2">
            
         {dimensions
             ? `${dimensions.width} × ${dimensions.height} px`
@@ -218,30 +222,37 @@ export default function StatsTab({ files, selectedFormat, selectedQuality } : St
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div className="bg-gray-50 rounded-lg p-2">
-            <p className="text-xs text-gray-400">Format</p>
-            <p id="statFormat" className="mono text-sm font-semibold text-gray-700 mt-0.5">
-              
-        {hasFiles
-          ? getMimeType(selectedFormat, files[0].type)
-              .split('/')[1]
-              .toUpperCase()
-          : '—'}
+           <div className="grid grid-cols-3 gap-2 text-center">
+        {/* Format */}
+        <div className="bg-[var(--surface2)] border border-[var(--border)] rounded-lg p-2">
+          <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-mono">
+            Format
+          </p>
+          <p className="mt-0.5 font-mono text-sm font-semibold text-[var(--accent)]">
+            {hasFiles
+              ? getMimeType(selectedFormat, files[0].type)
+                  .split("/")[1]
+                  .toUpperCase()
+              : "—"}
+          </p>
+        </div>
 
-            </p>
-          </div>
+               {/* Quality */}
+        <div className="bg-[var(--surface2)] border border-[var(--border)] rounded-lg p-2">
+          <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-mono">
+            Quality
+          </p>
+          <p className="mt-0.5 font-mono text-sm font-semibold text-[var(--accent)]">
+            {selectedFormat === "png" ? "LOSSLESS" : selectedQuality}
+          </p>
+        </div>
 
-          <div className="bg-gray-50 rounded-lg p-2">
-            <p className="text-xs text-gray-400">Quality</p>
-            <p id="statQuality" className="mono text-sm font-semibold text-gray-700 mt-0.5">
-              {selectedFormat === 'png' ? 'LOSSLESS' : selectedQuality}
-            </p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-2">
-            <p className="text-xs text-gray-400">Ratio</p>
-            <p  id="statRatio" className="mono text-sm font-semibold text-gray-700 mt-0.5">
+              {/* Ratio */}
+        <div className="bg-[var(--surface2)] border border-[var(--border)] rounded-lg p-2">
+          <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-mono">
+           
+           Ratio</p>
+                 <p className="mt-0.5 font-mono text-sm font-semibold text-[var(--accent)]">
               {ratio}
             </p>
           </div>

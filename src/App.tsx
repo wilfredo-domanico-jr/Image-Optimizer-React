@@ -1,16 +1,16 @@
-import './App.css'
+
 import { useState } from 'react';
-import Header from "./components/Header";
-import DropZone from "./components/DropZone";
-import FormatSelector from "./components/FormatSelector";
-import QualitySlider from "./components/QualitySlider";
-import Actions from "./components/Actions";
-import Tabs from "./components/Tabs";
+import Header from "./components/Header/Header";
+import DropZone from "./components/DropZone/DropZone";
+import FormatSelector from "./components/FormatSelector/FormatSelector";
+import QualitySlider from "./components/QualitySlider/QualitySlider";
+import Actions from "./components/Actions/Actions";
+import Tabs from "./components/Tabs/Tabs";
 
-import PreviewTab from "./components/PreviewTab";
-import StatsTab from './components/StatsTab';
+import PreviewTab from "./components/PreviewTab/PreviewTab";
+import StatsTab from './components/StatsTab/StatsTab';
 
-import BatchTab from "./components/BatchTab";
+import BatchTab from "./components/BatchTab/BatchTab";
 export default function App() {
 
 type Format = 'webp' | 'jpeg' | 'png' | 'original';
@@ -42,11 +42,11 @@ const handleReset = () => {
     <div className="p-4 sm:p-6 md:p-10">
       <Header />
 
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="max-w-5xl mx-auto bg-zinc-900 rounded-2xl shadow-sm border border-gray-600 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr]">
           
           {/* LEFT PANEL */}
-          <div className="p-5 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col gap-5">
+          <div className="p-5 border-b lg:border-b-0 lg:border-r border-gray-600 flex flex-col gap-5">
            <DropZone onFiles={handleFiles} />
             
             <FormatSelector

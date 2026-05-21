@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 
 type Format = 'webp' | 'jpeg' | 'png' | 'original';
@@ -159,35 +160,40 @@ export default function BatchTab({
   const hasFiles = items.length > 0;
 
   return (
-    <div className="flex-1 flex flex-col">
+       <div className="flex-1 flex flex-col">
 
       {!hasFiles && (
-        <div className="flex-1 flex items-center justify-center text-sm text-gray-300 p-10">
-          Add multiple images to batch compress
-        </div>
+             <div className="flex-1 flex items-center justify-center text-sm text-[var(--text-dim)] font-mono p-10">
+        Add multiple images to batch compress
+      </div>
       )}
 
       {hasFiles && (
         <>
           {/* LIST */}
-          <div className="flex-1 overflow-y-auto divide-y divide-gray-50 max-h-96">
+            <div className="flex-1 overflow-y-auto divide-y divide-[var(--border)] max-h-96">
             {items.map((item, i) => (
-              <div key={i} className="flex items-center gap-3 px-4 py-3">
+              <div key={i} className="flex items-center gap-3 px-4 py-3
+                transition-all duration-200
+                animate-[fadeIn_0.25s_ease-out]
+                ">
 
                 <img
                   src={item.preview}
-                  className="w-10 h-10 rounded-lg object-cover"
+                  className="w-10 h-10 rounded-lg object-cover
+                bg-[var(--surface2)]
+                border border-[var(--border)]"
                 />
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">
+                 <p className="text-xs font-medium truncate text-[var(--text)]">
                     {item.file.name}
                   </p>
 
-                  <p className="text-xs text-gray-400">
+                     <p className="text-xs mono text-[var(--text-muted)] mt-1">
                     {formatBytes(item.file.size)} → {formatBytes(item.compressedSize)}
                     {Number(item.savings) > 0 && (
-                      <span className="text-green-500 ml-1">
+                        <span className="text-xs text-[var(--accent)] ml-1">
                         -{item.savings}%
                       </span>
                     )}
@@ -196,9 +202,22 @@ export default function BatchTab({
 
                 <button
                   onClick={() => download(item)}
-                  className="w-8 h-8 rounded-lg border flex items-center justify-center"
+                  className=" w-8 h-8 rounded-lg
+                  cursor-pointer
+                border border-[var(--border)]
+                bg-[var(--surface2)]
+                text-[var(--text-muted)]
+                hover:bg-[var(--accent)]
+                hover:text-black
+                hover:border-[var(--accent)]
+                hover:scale-105
+                transition-all duration-150
+                flex items-center justify-center"
                 >
-                  ↓
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
                 </button>
 
               </div>
@@ -206,19 +225,53 @@ export default function BatchTab({
           </div>
 
           {/* ACTIONS */}
-          <div className="flex gap-2 p-3 border-t border-gray-100">
+           <div className="flex gap-2 p-3 border-t border-[var(--border)] bg-[var(--surface2)]">
             <button
               onClick={downloadAll}
-              className="flex-1 py-2.5 rounded-xl bg-black text-white"
+              className="flex-1 flex items-center justify-center gap-2
+          py-2.5 rounded-lg text-sm font-bold
+          bg-[var(--accent)] text-black
+          shadow-[0_0_20px_rgba(200,240,96,0.2)]
+          transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]
+          hover:bg-[#d9ff6e] hover:-translate-y-0.5
+          hover:shadow-[0_0_30px_rgba(200,240,96,0.35),0_8px_24px_rgba(0,0,0,0.3)]
+          active:translate-y-0
+          cursor-pointer"
             >
+              <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+
               Download All
             </button>
 
             <button
               onClick={clear}
-              className="p-2.5 border rounded-xl text-gray-400"
+              className="p-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface2)] text-[var(--text-muted)] hover:bg-[rgba(255,95,95,0.1)] hover:border-[var(--red)] hover:text-[var(--red)] transition-colors text-gray-400 cursor-pointer"
             >
-              ✕
+              <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
             </button>
           </div>
         </>
